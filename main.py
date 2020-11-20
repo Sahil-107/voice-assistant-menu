@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
         elif check(toolOpt) and "docker" in toolOpt:
             speech.speak("opening docker management")
-            container.dockerMenu()
+            container.dockerMenu(isSsh)
 
         elif check(toolOpt) and "amazon" in toolOpt:
             speech.speak("opening amazon web hosting service")
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
         elif check(toolOpt) and "server" in toolOpt:
             speech.speak("opening web server configuration")
-            webserver.webServer()
+            webserver.webServer(isSsh)
 
         elif check(toolOpt) and "yum" in toolOpt:
             speech.speak("opening yum configuration")

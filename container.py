@@ -6,20 +6,20 @@ This is the file which allows contianer operations for the menu app
 # imports for menu
 import os
 import subprocess
+from time import sleep
+import speech
+import recog
 
 docker = '''
-    Press 1 to create container
-    Press 2 to pull image
-    Press 3 to list running contianers
-    Press 4 to list all containers
-    Press 5 to list images
-    Press 6 to start container
-    Press 7 to stop container
-    Press 8 to or delete contianer
-    Press 9 to execute commands in the container
-    Press b to back to main menu
-    Enter your option: '''
-
+    Create container
+    Pull image
+    List running containers
+    List all containers
+    List images
+    Start container
+    Stop container
+    Delete container
+    Execute mannually'''
 
 def dockerMenu(sshIp=""):
     while True:
@@ -33,48 +33,86 @@ def dockerMenu(sshIp=""):
         print("Docker Operations".center(size.columns))
         os.system("tput setaf 7; tput setab 0")
 
-        subOpt = input(docker)
+        speech.speak("Here are the services provided")
+        print(docker)
+
+        speech.speak("What can i do for you?")
+        subOpt = recog.voice_rec()
+        subOpt = subOpt.lower()
+
         out = ""
         os.system("tput reset")
-        if subOpt == "1":
+        if "create" or "new" in subOpt and "container" or "containers" in subOpt:
+            speech.speak("Creating container...")
             out = startContainer(sshIp)
-        elif subOpt == "2":
+
+        elif "pull" or "download" in subOpt and "image" or "images" in subOpt:
+            speech.speak("Pulling Image...")
             out = pullImg(sshIp)
-        elif subOpt == "3":
+
+        elif "running" in subOpt and "container" in subOpt:
+            speech.speak("These are the running containers...")
             out = operate("container", "ls", sshIp)
-        elif subOpt == "4":
+
+        elif "list" or "show" in subOpt and "container" or "containers" in subOpt:
+            speech.speak("Listing all containers...")
             out = operate("container", "ls -a", sshIp)
-        elif subOpt == "5":
+
+        elif "list" or "show" in subOpt and "os" or "images" in subOpt:
+            speech.speak("Listing all images...")
             out = operate("image", "ls", sshIp)
-        elif subOpt == "6":
+
+        elif "start" or "launch" in subOpt and "container" or "containers" in subOpt:
+            speech.speak("please enter container name or id")
             cnameId = input("Enter container name or id: ")
+            speech.speak("Starting container...")
             out = operate("container", "start", cnameId, sshIp)
-        elif subOpt == "7":
-            cnameId = input("Enter container name or id: ")
+            speech.speak("container started...")
+        
+        elif "stop" or "pause" in subOpt and "container" or "containers" in subOpt:
+            speech.speak("please enter container name or id")
+            cnameId = input("Enter container name or id")
             out = operate("container", "stop", cnameId, sshIp)
-        elif subOpt == "8":
+            speech.speak("container stopped...")
+        
+        elif "delete" or "terminate" in subOpt and "container" or "containers":
+            speech.speak("please enter container name or id")
             cnameId = input("Enter container name or id: ")
             out = operate("container", "rm -f", cnameId, sshIp)
-        elif subOpt == "9":
+            speech.speak("container terminated...")
+        
+        elif "execute" or "run" in subOpt and "mannual" or "mannually" in subOpt:
             cnameId = input("Enter container name or id: ")
             cmd = input("Enter the command you want to run: ")
             cnameId = f"{cnameId} {cmd}"
             out = operate("container", "exec -it", cnameId, sshIp)
+        
         else:
             return
+        
         print(out)
-        input("press any key to go back to menu")
+        # input("press any key to go back to menu")
 
 
 def startContainer(sshIp=""):
     os.system("tput clear")
-    imgname = input("enter docker image name (*req): ")
-    imgv = input("enter docker image version (latest): ") or "latest"
-    cname = input("enter docker container name (random): ") or None
-    volname = input("enter docker volume name (none): ") or None
-    volpath = input("enter docker volume path (none): ") or None
-    netname = input(
-        "enter docker net name[brigde/host/null] (bridge):") or "bridge"
+    speech.speak("please enter docker image name")
+    imgname = input("Enter docker image name (*req): ")
+
+    speech.speak("please enter docker image version")
+    imgv = input("Enter docker image version (latest): ") or "latest"
+
+    speech.speak("Enter give container name")
+    cname = input("Enter docker container name (random): ") or None
+
+    speech.speak("enter docker volume name")
+    volname = input("Enter docker volume name (none): ") or None
+
+    speech.speak("please enter docker volume path")
+    volpath = input("Enter docker volume path (none): ") or None
+
+    speech.speak("please enter docker net name")
+    netname = input("Enter docker net name[brigde/host/null] (bridge):") or "bridge"
 
     volmnt = ""
 
@@ -89,8 +127,11 @@ def startContainer(sshIp=""):
 
 
 def pullImg(sshIp=""):
-    imgname = input("enter docker image name (*req): ")
-    imgv = input("enter docker image version (latest): ") or "latest"
+    speech.speak("Enter docker image name")
+    imgname = input("Enter docker image name (*req): ")
+
+    speech.speak("enter docker image version by default it's latest")
+    imgv = input("Enter docker image version (latest): ") or "latest"
 
     return subprocess.getoutput(f'{sshIp} sudo podman pull {imgname}:{imgv}')
 
@@ -99,5 +140,5 @@ def operate(resourceType, op, cname="", sshIp=""):
     return subprocess.getoutput(f'{sshIp} sudo podman {resourceType} {op} {cname}')
 
 
-if __name__ == '__main__':
-    print("this code is not meant to be run.\nThis is a module")
+# if __name__ == '__main__':
+#     print("this code is not meant to be run.\nThis is a module")
