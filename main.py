@@ -14,13 +14,17 @@ import partition_2
 
 def check(toolOpt):
     if any(ele in toolOpt for ele in do) and not any(ele in toolOpt for ele in donot):
-        print('true')
         return True
-    print("false")
     return False
 
-do = ["configure","run","start","open","launch","manage","configuration","eexcute"]
+do = ["configure","run","start","open","launch","manage","configuration","excute"]
 donot = ["don't","do not","no"]
+# docker_list=["docker","container"]
+# hadoop_list=["hadoop","cluster"]
+# aws_list=["amazon","hosting","aws"]
+# server_list=["web","server"]
+# lvm_list=["lvm","logical","volume"]
+# yum_list=["yum","repo","repositry"]
 
 if __name__ == "__main__":
     text = '''
@@ -32,12 +36,12 @@ if __name__ == "__main__":
     Manage Logical Volumes
     Manage static partitions'''
 
-    # sshIp = ""
-    # print('Do you want to do ssh? Say (yes/no)')
-    # speech.speak("Do you want to do ssh?")
-    # sleep(2)
-    # isSsh = recog.voice_rec()
-    # isSsh.lower()
+    sshIp = ""
+    print('Do you want to do ssh? Say (yes/no)')
+    speech.speak("Do you want to do ssh?")
+    sleep(2)
+    isSsh = recog.voice_rec()
+    isSsh.lower()
 
     while True:
         size = os.get_terminal_size()
@@ -48,17 +52,17 @@ if __name__ == "__main__":
         os.system("tput setaf 7; tput setab 0")
         speech.speak("Welcome to the menu!")
 
-        # if "yes" in isSsh:
-        #     sshIp = input('Enter the ssh IP or domain: ')
-        #     speech.speak("Please enter IP address")
-        #     sshIp = f"ssh {sshIp}"
+        if "yes" in isSsh:
+            sshIp = input('Enter the ssh IP or domain: ')
+            speech.speak("Please enter IP address")
+            sshIp = f"ssh {sshIp}"
 
         speech.speak("Here are the services provided")
         print(text)
         sleep(2)
         speech.speak("What can i do for you?")
         toolOpt = recog.voice_rec()
-        toolOpt.lower()
+        toolOpt = toolOpt.lower()
 
         if "quit" and "exit" in toolOpt:
             print("Exiting...!")
@@ -66,27 +70,27 @@ if __name__ == "__main__":
             sleep(1)
             break
 
-        elif check(toolOpt) and "docker" or "container" in toolOpt:
+        elif check(toolOpt) and "docker" in toolOpt:
             speech.speak("opening docker management")
             container.dockerMenu()
 
-        elif check(toolOpt) and "amazon" or "hosting" in toolOpt:
+        elif check(toolOpt) and "amazon" in toolOpt:
             speech.speak("opening amazon web hosting service")
             awsmenu.aws()
 
-        elif check(toolOpt) and "hadoop" or "cluster" in toolOpt:
+        elif check(toolOpt) and "hadoop" in toolOpt:
             speech.speak("opening hadoop management")
             hadoop.hadoop()
 
-        elif check(toolOpt) and "webserver" or "web server" in toolOpt:
+        elif check(toolOpt) and "server" in toolOpt:
             speech.speak("opening web server configuration")
             webserver.webServer()
 
-        elif check(toolOpt) and "yum" or "repo" or "repositry" in toolOpt:
+        elif check(toolOpt) and "yum" in toolOpt:
             speech.speak("opening yum configuration")
             yum_config.yum()
 
-        elif check(toolOpt) and "partition" or "partitions" or "volume" or "volumes" or "logical" in toolOpt:
+        elif check(toolOpt) and "locical" in toolOpt:
             speech.speak("opening logical volume management")
             lvm.logical_vol()
 
