@@ -87,11 +87,13 @@ def dockerMenu(sshIp=""):
             cnameId = f"{cnameId} {cmd}"
             out = operate("container", "exec -it", cnameId, sshIp)
 
-        elif "exit" or "quit" in subOpt:
+        elif "exit" or "quit" or "back" in subOpt:
             return
         
         else:
-            continue
+            print("Invalid request")
+            speech.speak("invalid request")
+        os.system("tput clear")
         
         print(out)
         # input("press any key to go back to menu")

@@ -287,7 +287,7 @@ def hadoop():
 
                 input("Press Enter to continue")
 
-        elif x == "b":
+        elif "exit" or "quit" or "back" in opt:
             return
 
         else:
