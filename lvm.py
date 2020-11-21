@@ -143,7 +143,7 @@ def logical_vol():
             speech.speak("listing logical volumes")
             os.system("lvdisplay")
 
-        elif "exit" or "quit" or "back" in opt:
+        elif "exit" or "quit" or "back" in x:
             return
 
         else:

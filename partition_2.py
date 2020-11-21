@@ -1,12 +1,13 @@
 import os
+import speech
+import recog
 
 partition="""
-Enter 1 to List Partitions
-Enter 2 to Create Partition
-Enter 3 to Delete Partiton
-Enter 4 to Mount the Partition
-Enter 5 to Format the Partitiion
-Enter b to go back to menu
+List Partitions
+Create Partition
+Delete Partiton
+Mount Partition
+Format the Partitiion
 """ 
 
 def static_part():
@@ -18,35 +19,55 @@ def static_part():
         print("Partitions".center(size.columns))
         os.system("tput setaf 7; tput setab 0")
 
-        x=input(partition)
+        speech.speak("here are the services provided")
+        print(partition)
+        speech.speak("What can i do for you?")
+        opt = recog.voice_rec()
+        opt = opt.lower()
 
-        if x == '1':
+        if "list" or "show" in opt:
             os.system("fdisk -l")
 
-        elif x=='2':
+        elif "create" or "make" or "new" in opt:
+            speech.speak("enter the device name")
             device = input("Enter the Device name: ")
-            p_type = input("Which typr of partition you want to create? [p(Primary)/e(Extended)]: ").lower()
+
+            speech.speak("primary or extended")
+            p_type = input("Which type of partition you want to create? [p(Primary)/e(Extended)]: ").lower()
+
+            speech.speak("enter partition number")
             number=input("Enter the partition number (leave empty for default): ")
+
+            speech.speak("enter first sector")
             start=input("Enter the First sector (leave empty for default): ")
+
+            speech.speak("input last sector")
             end=input("Enter the Last sector (leave empty for default): ")
             os.system(f"printf 'n\n{p_type}\n{number}\n{start}\n{end}\nw\n' | fdisk {device}")
 
-        elif x=='3':
+        elif "delete" or "remove" in opt:
+            speech.speak("enter the device name")
             device = input("Enter the Device name: ")
             os.system(f"printf 'd\nw\n' | fdisk {device}")
 
-        elif x=='4':
+        elif "mount" or "connect" in opt:
+            speech.speak("enter the device name")
             device = input("Enter the Device name: ")
+
+            speech.speak("enter the path of directory")
             path=input("Enter the Directory path: ")
             os.system(f"mount {device} {path}")
             print(f"{device} mounted to {path} directory.")
                 
-        elif x=='5':
+        elif "format" in opt:
+            speech.speak("enter the device name")
             device = input("Enter the Device name: ")
             os.system(f"mkfs.ext4 {device}")
 
-        elif x=='b':
-            exit()
+        elif "exit" or "quit" or "back" in opt:
+            return
+
         else:
             print("Invalid request")
-        input("Press any key to continue")
+            speech.speak("invalid request")
+        os.system("tput clear")

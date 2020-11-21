@@ -28,3 +28,4 @@ def yum():
     system("yum repolist")
 
     print("\nYum has been successfully configured on your system.......")
+    speech.speak("Yum has been successfully configured on your system")

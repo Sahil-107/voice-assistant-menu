@@ -1,4 +1,6 @@
 import os
+import speech
+import recog
 
 awsPrompt = """
 Configure AWS

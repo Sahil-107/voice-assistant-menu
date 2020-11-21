@@ -1,12 +1,12 @@
 import os
+import speech
+import recog
 
 webserverval = '''
-    Press 1 to install HTTPD
-    Press 2 to start Webserver
-    Press 3 to restart Webserver
-    Press 4 to stop Webserver
-    Press b to go back to main menu
-    enter your choice: '''
+    Install HTTPD
+    Start Webserver
+    Restart Webserver
+    Stop Webserver'''
 
 
 def webServer(sshIp=""):
@@ -19,20 +19,35 @@ def webServer(sshIp=""):
         print("Webserver actions".center(size.columns))
         os.system("tput setaf 7; tput setab 0")
 
-        x = input(webserverval)
-        os.system("tput clear")
+        speech.speak("here are the services provided")
+        print(webserverval)
+        speech.speak("What can i do for you?")
+        opt = recog.voice_rec()
+        opt = opt.lower()
 
-        if x == "1":
+        if "install" or "download" in opt:
+            speech.speak("installing web server")
             os.system(f"{sshIp} dnf install httpd")
-        elif x == "2":
+
+        elif "start" or "launch" in opt:
+            speech.speak("starting web server")
             os.system(f"{sshIp} systemctl enable --now httpd")
             print("Web server started")
-        elif x == "3":
+
+        elif "restart" or "again" in opt:
+            speech.speak("restarting web server")
             os.system(f"{sshIp} systemctl restart httpd")
             print("Web server restarted")
-        elif x == "4":
+
+        elif "stop" or "pause" in opt and "server" or "web" in opt:
+            speech.speak("stopping web server")
             os.system(f"{sshIp} systemctl stop httpd")
             print("Web server stopped")
-        elif x == "b":
+
+        elif "exit" or "quit" or "back" in opt:
             return
-        input("\npress any key to continue")
+
+        else:
+            print("Invalid request")
+            speech.speak("invalid request")
+        os.system("tput clear")
