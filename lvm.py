@@ -28,73 +28,109 @@ def logical_vol():
         print(lvm_part)
         speech.speak("What can i do for you?")
         x = recog.voice_rec()
-        x.lower()
+        x = x.lower()
         
         if "show" or "check" or "list" in x and "partitions" or "partition" or "storage" in x:
+            speech.speak("listing partitions")
             os.system("fdisk -l")
 
         elif "create" or "make" or "new" in x and "physical" or "volumes" or "volumes" in x:
             while True:
+                speech.speak("enter name of storage")
                 pv1 = input("Enter the name of storage: ")
                 os.system(f"pvcreate {pv1}")
-                another = input("Do you want to create another LV [Y/N]: ").lower()
+
+                speech.speak("Do you want to create another Physical Volume")
+                another = input("Do you want to create another PV [Y/N]: ").lower()
                 if another == 'y':
                     pass
                 else:
                     exit()
 
-        elif x == '3':
+        elif "display" or "show" in x and "physical" in x:
+            speech.speak("enter the name of the storage")
             pv = input("Enter the name of storage: ")
             os.system(f"pvdisplay {pv}")
 
-        elif x == '4':
+        elif "extend" or "create" in x and "volume" in x:
+            speech.speak("Here are the services provided")
             print("""
-            Enter 1 to create new Volume Group
-            Enter 2 extend Volume Group
+            Create new Volume Group
+            Extend Volume Group
             """)
-            vg = int(input())
-            if vg == 1:
+            speech.speak("What can i do for you?")
+
+            vg = recog.voice_rec()
+            vg = vg.lower()
+
+            if "create" or 'make' in vg:
+                speech.speak("give a name to volume group")
                 vgn = input("Give name to the VG: ")
+
+                speech.speak("enter name of physical volume")
                 pvn = input("Enter the name of PV: ")
                 os.system(f"vgcreate {vgn} {pvn}")
 
-            elif vg == 2:
+            elif "extend" or "increase" in vg:
+                speech.speak("Enter the name of existing volume group")
                 vgn = input("Enter the name of existing VG: ")
+
+                speech.speak("Enter the name of physical volume")
                 pvn = input("Enter the name of the PV: ")
                 os.system(f"vgextend {vgn} {pvn}")
 
-        elif x == '5':
+        elif "display" or "show" in x and "group" in x:
+            speech.speak("Enter the name of existing volume group")
             vgn = input("Enter the name of VG: ")
             os.system(f"vgdisplay {vgn}")
 
-        elif x == '6':
+        elif "manage" or "create" or "make" in x and "logical" in x:
+            speech.speak("Here are the services provided")
             print("""
-            Enter 1 to create new Logical Volume
-            Enter 2 extend Logical Volume
-            Enter 3 to format the Logical Volume
-            Enter 4 to mount the Logical Volume
+            Create new Logical Volume
+            Extend Logical Volume
+            Format the Logical Volume
             """)
-            lv = int(input())
 
-            if lv == 1:
+            speech.speak("What can i do for you?")
+
+            lv = recog.voice_rec()
+            lv = lv.lower()
+
+            if "create" or "make" in lv:
+                speech.speak("enter size of logical volume")
                 size = input("Enter size for your LV: ")
+
+                speech.speak("give a name to logical volume")
                 lvn = input("Give name to your LV: ")
+
+                speech.speak("enter the name of volume group")
                 vgn = input("Enter name of the VG: ")
                 os.system(f"lvcreate --size {size} --name{lvn} {vgn}")
 
-            elif lv == 2:
-                lvn = input("Give name to your LV: ")
+            elif "extend" or "increase" in lv:
+                speech.speak("enter the name of logical")
+                lvn = input("Enter the name of your LV: ")
+
+                speech.speak("enter the name of volume group")
                 vgn = input("Enter name of the VG: ")
                 os.system(f"lvextend --size {size} /dev/{vgn}/{lvn}")
 
-            elif lv == 3:
+            elif "format" or "clear" in lv:
+                speech.speak("enter the name of the volume group")
                 vgn = input("Enter the name of VG:")
+
+                speech.speak("enter the name of logical volume")
                 lvn = input("Enter the name of LV:")
+
                 os.system(f"mkfs.ext4  /dev/{vgn}/{lvn}")
                 print("Partiton formatted....\n")
+
+                speech.speak("Do you want to mount Logical volume")
                 mout = input("Do you want to mount LV [Y/N]: ").upper()
 
                 if mout == "Y":
+                    speech.speak("enter the folder path")
                     path = input("Enter path of folder where you want to mount : ")
                     print("Creating directory")
                     os.system(f'mkdir {path}')
@@ -103,12 +139,14 @@ def logical_vol():
                 else:
                     exit()
 
-        elif x == '7':
+        elif "display" or "show" in x and "logical" in x:
+            speech.speak("listing logical volumes")
             os.system("lvdisplay")
 
-        elif x == 'b':
-            exit()
+        elif "exit" or "quit" or "back" in opt:
+            return
 
         else:
-            print("Not Supported")
-        input("Press enter to continue....")
+            print("Invalid request")
+            speech.speak("invalid request")
+        os.system("tput clear")
